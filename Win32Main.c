@@ -8,6 +8,14 @@
 #include "cutils/UtString.c"
 #include "cutils/UtWideString.c"
 
+void Useage() {
+    char *header = "Quick Link\n\nA way to \"tag\" paths and use them with other cli tools";
+    char *addCommand = "add [tag name] adds the current path of the active shell with the specified tag to the qpcmds file";
+    char *delCommand = "del [tag name] removes the specified tag and connected path from the qpcmds file";
+    char *customCommand = "[tag name] prints the path connected to the specified tag to stdout";
+    printf("%s\n\nCommands:\n\n%s\n\n%s\n\n%s\n", header, addCommand, delCommand, customCommand);
+}
+
 typedef struct {
     char *key;
     char *val;
@@ -104,6 +112,7 @@ int main(int argc, char **argv) {
     AL memArena = AlMakeArena(&sysAlloc, 10000);
 
     if (argc < 2) {
+        Useage();
         return 0;
     }
 
@@ -132,6 +141,7 @@ int main(int argc, char **argv) {
     Command *cmds = ParseCommandFile(&memArena, cmdFileData, &cmdC);
     if(StrEq("del", argv[COMMAND])) {
         if (argc < 3) {
+            Useage();
             return 0;
         }
 
@@ -144,9 +154,11 @@ int main(int argc, char **argv) {
     for (usize i = 0; i < cmdC; i++) {
         if (StrEq(argv[COMMAND], cmds[i].key)) {
             printf("%s\n", cmds[i].val);
-            break;
+            goto CLOSE;
         }
     }
+
+    Useage();
 
 CLOSE:
     CloseHandle(fh);
