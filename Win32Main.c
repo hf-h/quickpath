@@ -12,8 +12,9 @@ void Useage() {
     char *header = "Quick Link\n\nA way to \"tag\" paths and use them with other cli tools";
     char *addCommand = "add [tag name] adds the current path of the active shell with the specified tag to the qpcmds file";
     char *delCommand = "del [tag name] removes the specified tag and connected path from the qpcmds file";
+    char *listCommand = "list lists all custom commands";
     char *customCommand = "[tag name] prints the path connected to the specified tag to stdout";
-    printf("%s\n\nCommands:\n\n%s\n\n%s\n\n%s\n", header, addCommand, delCommand, customCommand);
+    printf("%s\n\nCommands:\n\n%s\n\n%s\n\n%s\n\n%s\n", header, addCommand, delCommand, listCommand, customCommand);
 }
 
 typedef struct {
@@ -127,6 +128,11 @@ int main(int argc, char **argv) {
         cmdFileData = "";
     }
 
+    if (StrEq("list", argv[COMMAND])) {
+        printf("%s", cmdFileData);
+        goto CLOSE;
+    }
+
     if(StrEq("add", argv[COMMAND])) {
         char *cwd = Alloc(&memArena, MAX_PATH);
         GetCurrentDirectoryA(MAX_PATH, cwd);
@@ -139,7 +145,7 @@ int main(int argc, char **argv) {
 
     usize cmdC = 0;
     Command *cmds = ParseCommandFile(&memArena, cmdFileData, &cmdC);
-    if(StrEq("del", argv[COMMAND])) {
+    if (StrEq("del", argv[COMMAND])) {
         if (argc < 3) {
             Useage();
             return 0;

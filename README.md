@@ -10,3 +10,4 @@ qp del [tag name] removes the specified tag and connected path from the qpcmds f
 
 qp [tag name] prints the path connected to the specified tag to stdout
 
+qp list lists all custom commands
